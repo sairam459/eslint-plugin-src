@@ -1,35 +1,37 @@
 module.exports = {
   rules: {
-    "async-func-name": {
-      create: function (context) {
-        return {
-          FunctionDeclaration(node) {
-            console.log(node.id.name);
-            if (node.async && !/Async$/.test(node.id.name)) {
+    "match-regex": require("./lib/rules/match-regex"),
+  },
+};
+
+module.exports = {
+  rules: {
+    "async-func-name": function (context) {
+      return {
+        FunctionDeclaration(node) {
+          console.log(node.id.name);
+          if (node.async && !/Async$/.test(node.id.name)) {
+            context.report({
+              node,
+              message: "Async function name must end in 'Async'",
+            });
+          }
+        },
+      };
+    },
+    "hook-func-name": function (context) {
+      return {
+        CallExpression(node) {
+          if (isHook(node.callee)) {
+            if (!getFunctionName(node.arguments[0])) {
               context.report({
                 node,
-                message: "Async function name must end in 'Async'",
+                message: "Use named function",
               });
             }
-          },
-        };
-      },
-    },
-    "hook-func-name": {
-      create: function (context) {
-        return {
-          CallExpression(node) {
-            if (isHook(node.callee)) {
-              if (!getFunctionName(node.arguments[0])) {
-                context.report({
-                  node,
-                  message: "Use named function",
-                });
-              }
-            }
-          },
-        };
-      },
+          }
+        },
+      };
     },
   },
 };
