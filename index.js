@@ -1,11 +1,11 @@
 module.exports = {
   configs: {
     default: {
-      plugins: ["srcrules"],
+      plugins: ["src"],
       rules: {
-        "srcrules/hook-func-name": "warn",
-        "srcrules/svg-file-name": "warn",
-        "srcrules/async-func-name": "warn",
+        "src/hook-func-name": "warn",
+        "src/svg-file-name": "warn",
+        "src/async-func-name": "warn",
       },
     },
   },
