@@ -1,6 +1,6 @@
 {
-  "name": "eslint-plugin-src",
-  "version": "1.0.0",
+  "name": "eslint-plugin-srcrules",
+  "version": "1.0.2",
   "description": "",
   "main": "index.js",
   "scripts": {

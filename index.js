@@ -1,37 +1,61 @@
 module.exports = {
-  rules: {
-    "match-regex": require("./lib/rules/match-regex"),
-  },
-};
-
-module.exports = {
-  rules: {
-    "async-func-name": function (context) {
-      return {
-        FunctionDeclaration(node) {
-          console.log(node.id.name);
-          if (node.async && !/Async$/.test(node.id.name)) {
-            context.report({
-              node,
-              message: "Async function name must end in 'Async'",
-            });
-          }
-        },
-      };
+  configs: {
+    default: {
+      plugins: ["srcrules"],
+      rules: {
+        "srcrules/hook-func-name": "warn",
+        "srcrules/svg-file-name": "warn",
+        "srcrules/async-func-name": "warn",
+      },
     },
-    "hook-func-name": function (context) {
-      return {
-        CallExpression(node) {
-          if (isHook(node.callee)) {
-            if (!getFunctionName(node.arguments[0])) {
+  },
+  rules: {
+    "async-func-name": {
+      create: function (context) {
+        return {
+          FunctionDeclaration(node) {
+            console.log(node.id.name);
+            if (node.async && !/Async$/.test(node.id.name)) {
               context.report({
                 node,
-                message: "Use named function",
+                message: "Async function name must end in 'Async'",
               });
             }
-          }
-        },
-      };
+          },
+        };
+      },
+    },
+    "hook-func-name": {
+      create: function (context) {
+        return {
+          CallExpression(node) {
+            if (isHook(node.callee)) {
+              if (!getFunctionName(node.arguments[0])) {
+                context.report({
+                  node,
+                  message: "Use named function",
+                });
+              }
+            }
+          },
+        };
+      },
+    },
+    "svg-file-name": {
+      create: function (context) {
+        return {
+          ImportDeclaration(node) {
+            if (node.source.value.indexOf(".svg") !== -1) {
+              if (!/\bw*Icon\b/.test(node.specifiers[0].local.name)) {
+                context.report({
+                  node,
+                  message: "icons must end with word 'Icon'",
+                });
+              }
+            }
+          },
+        };
+      },
     },
   },
 };
