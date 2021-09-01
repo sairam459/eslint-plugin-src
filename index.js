@@ -16,12 +16,13 @@ module.exports = {
         return {
           VariableDeclaration(node) {
             if (node.parent.sourceType === "module" && node.kind == "const") {
-              const dec = node.declarations[0];
-              if (dec && dec.id && !/^[A-Z_]+$/.test(dec.id.name))
-                context.report({
-                  node,
-                  message:
-                    "'const' variable should follow UPPER_CASE convention"
+              node.declarations &&
+                node.declarations.forEach(declaration => {
+                  if (declaration.id && !/^[A-Z_]+$/.test(declaration.id.name))
+                    context.report({
+                      node,
+                      message: `constant '${declaration.id.name}' should follow UPPER_CASE convention`
+                    });
                 });
             }
           }
