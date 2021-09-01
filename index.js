@@ -6,10 +6,28 @@ module.exports = {
         "src/hook-func-name": "warn",
         "src/svg-file-name": "warn",
         "src/async-func-name": "warn",
+        "src/const-naming-convention": "warn",
       },
     },
   },
   rules: {
+    "const-naming-convention": {
+      create: function (context) {
+        return {
+          VariableDeclaration(node) {
+            if (node.parent.sourceType === "module" && node.kind == "const") {
+              const dec = node.declarations[0];
+              if (dec && dec.id && !/^[A-Z_]+$/.test(dec.id.name))
+                context.report({
+                  node,
+                  message:
+                    "'const' variable should follow UPPER_CASE convention"
+                });
+            }
+          }
+        };
+      }
+    },
     "async-func-name": {
       create: function (context) {
         return {
